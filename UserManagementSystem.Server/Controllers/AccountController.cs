@@ -29,7 +29,7 @@ public class AccountController : Controller
     }
 
     /**
-     * [GET] /accounts/
+     * [GET] /accounts
      * Gets user accounts in a list form.
      */
     [HttpGet]
@@ -40,11 +40,11 @@ public class AccountController : Controller
     }
 
     /**
-     * [POST] /accounts/
+     * [POST] /accounts
      * Create account.
      */
     [HttpPost]
-    public async Task<IActionResult> CreateAccount([FromBody] CreateUserBody UserBody)
+    public async Task<IActionResult> CreateAccount([FromBody] UserBody UserBody)
     {
         if(!ModelState.IsValid)
         {
@@ -75,7 +75,36 @@ public class AccountController : Controller
     }
 
     /**
-     * [DELETE] /accounts/
+     * [PUT] /accounts
+     * Create account.
+     */
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateAccount(string id, [FromBody] UserBody UserBody)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
+
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            return BadRequest();
+        }
+
+        var result = await _userManager.UpdateAsync(user);
+
+        // If creating user doesn't succeed.
+        if (!result.Succeeded)
+        {
+            return BadRequest(new { errors = result.Errors.Select(e => e.Description) });
+        }
+
+        return Ok();
+    }
+
+    /**
+     * [DELETE] /accounts
      * Create account.
      */
     [HttpDelete("{id}")]
