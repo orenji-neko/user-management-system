@@ -42,6 +42,8 @@ namespace UserManagementSystem.Server.Data
                 Title = "Mr.",
                 Email = "user@email.com",
                 NormalizedEmail = "USER@EMAIL.COM",
+                UserName = "user@email.com",
+                NormalizedUserName = "USER@EMAIL.COM",
                 EmailConfirmed = false,
             };
             user.PasswordHash = passwordHasher.HashPassword(user, "password");
