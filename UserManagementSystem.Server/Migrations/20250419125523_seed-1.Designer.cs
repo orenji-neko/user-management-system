@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserManagementSystem.Server.Data;
 
@@ -10,9 +11,11 @@ using UserManagementSystem.Server.Data;
 namespace UserManagementSystem.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250419125523_seed-1")]
+    partial class seed1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
@@ -251,7 +254,7 @@ namespace UserManagementSystem.Server.Migrations
                         {
                             Id = "user-0001",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5e8845c9-4c36-4bb1-a7d1-cb1db79baea8",
+                            ConcurrencyStamp = "e6d69294-28aa-4605-a006-697143925032",
                             Email = "user@email.com",
                             EmailConfirmed = false,
                             FirstName = "John",
@@ -259,9 +262,9 @@ namespace UserManagementSystem.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@EMAIL.COM",
                             NormalizedUserName = "USER@EMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHcGnlc4Y7E7rVU8iCPL4EBh685a5XsgWrbvyRoGNJ4PDXFrZeHFN7IUUnyt1KnKnA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECPLqWBXu5Z9ynF4EM/Z3L0p95BNBZ/qrgQEurkXiDKulJp3iEetS5pao8n3JypJYw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b2999bda-d006-45a8-97d2-020f53baf1f0",
+                            SecurityStamp = "b91eef61-ba27-4519-803e-413d92ca9691",
                             Title = "Mr.",
                             TwoFactorEnabled = false,
                             UserName = "user@email.com"
@@ -270,16 +273,15 @@ namespace UserManagementSystem.Server.Migrations
                         {
                             Id = "admin-0001",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4e72e996-d451-4387-b3b3-246abb483b8f",
+                            ConcurrencyStamp = "714da48e-498d-4324-83f7-91f5f04f1a8e",
                             Email = "admin@email.com",
                             EmailConfirmed = false,
                             FirstName = "Ricardo",
                             LastName = "Milos",
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBA3FdytRmIjCLO/3e8DNPE4qVExkt2AaT3dBGhP9HwZHIlq26mbF5oXy397aMcltQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "de357dfa-d110-4516-b935-b15c8432914d",
+                            SecurityStamp = "369b3b40-559e-4768-9b3c-9de868efa201",
                             Title = "Mr.",
                             TwoFactorEnabled = false,
                             UserName = "admin@email.com"
