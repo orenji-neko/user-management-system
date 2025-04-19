@@ -33,6 +33,7 @@ public class AccountController : Controller
      * Gets user accounts in a list form.
      */
     [HttpGet]
+    
     public async Task<ActionResult<IEnumerable<User>>> GetAccounts()
     {
         var users = await _context.Users.ToArrayAsync();
