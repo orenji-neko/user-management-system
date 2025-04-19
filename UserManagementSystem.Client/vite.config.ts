@@ -51,6 +51,10 @@ export default defineConfig({
             '^/accounts': {
                 target,
                 secure: false
+            },
+            "^/swagger": {
+                target,
+                secure: false
             }
         },
         port: parseInt(env.DEV_SERVER_PORT || '64391'),
