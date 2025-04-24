@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
+import { Button } from "../../components/ui/button";
+import { Pen, Trash } from "lucide-react";
 
 interface Account {
     id: string;
@@ -26,8 +28,26 @@ export default function Accounts() {
         setAccounts(result);
     }
 
-    useEffect(() => {
+    const deleteAccount = async (id: string) => {
+        const response = await fetch(`/accounts/${id}`, {
+            method: "DELETE"
+        });
+
+        if (!response.ok) {
+            toast.error("Failed to delete account!");
+            return;
+        }
+
+        toast.success("Successfully deleted account");
         fetchAccounts();
+    }
+
+    useEffect(() => {
+        const id = setTimeout(fetchAccounts, 1000);
+
+        return () => {
+            clearTimeout(id);
+        }
     }, []);
 
     return (
@@ -58,6 +78,10 @@ export default function Accounts() {
                                         <TableCell>{account.title}</TableCell>
                                         <TableCell>{account.firstName}</TableCell>
                                         <TableCell>{account.lastName}</TableCell>
+                                        <TableCell className="flex flex-row gap-2">
+                                            <Button variant="outline"><Pen /></Button>
+                                            <Button variant="destructive" onClick={() => deleteAccount(account.id)}><Trash /></Button>
+                                        </TableCell>
                                     </TableRow>
                                 ))
                             }

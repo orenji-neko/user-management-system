@@ -24,22 +24,60 @@ namespace UserManagementSystem.Server.Controllers
         {
             if (!ModelState.IsValid)
             {
+                Console.WriteLine("Invalid body");
                 return BadRequest(ModelState);
             }
 
             var user = await _userManager.FindByEmailAsync(model.Email!);
             if (user == null)
             {
+                Console.WriteLine("Missing user");
                 return NotFound(ModelState);
             }
 
             var result = await _signInManager.PasswordSignInAsync(user, model.Password!, false, false);
             if (!result.Succeeded)
             {
+                Console.WriteLine("Login failed");
                 return BadRequest(ModelState);
             }
 
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("register")]
+        public async Task<ActionResult<User>> Register([FromBody] RegisterBody model)
+        {
+            if (!ModelState.IsValid)
+            {
+                Console.WriteLine("Invalid body");
+                return BadRequest(ModelState);
+            }
+
+            var passwordhasher = new PasswordHasher<User>();
+
+            var user = new User
+            {
+                UserName = model.Email,
+                NormalizedUserName = model.Email,
+                Email = model.Email,
+                NormalizedEmail = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Title = model.Title
+            };
+
+            if (model.Password == null)
+            {
+                Console.WriteLine("Missing password");
+                return BadRequest(ModelState);
+            }
+            user.PasswordHash = passwordhasher.HashPassword(user, model.Password);
+
+            await _userManager.CreateAsync(user);
+
+            return user;
         }
     }
 }

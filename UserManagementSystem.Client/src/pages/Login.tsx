@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Link } from "react-router";
 
 const schema = z.object({
     email: z.string(),
@@ -36,6 +37,7 @@ function Login() {
 
         toast.success("Successfully logged-in!");
         const result = await response.text();
+        console.log(result);
     }
 
     return (
@@ -70,6 +72,10 @@ function Login() {
                         />
 
                         <Button type="submit">Login</Button>
+                        <p className="text-center">or</p>
+                        <Link to="/register" className="w-full">
+                            <Button type="button" variant="secondary" className="w-full">Register</Button>
+                        </Link>
                     </form>
                 </Form>
             </div>

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, Outlet } from "react-router";
 
 const navLinks = [
@@ -8,6 +9,7 @@ const navLinks = [
 ]
 
 export default function AdminLayout() {
+
     return (
         <div className="w-screen h-screen">
             <nav className="w-full shadow p-4">
