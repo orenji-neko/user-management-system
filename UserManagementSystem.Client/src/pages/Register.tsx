@@ -1,4 +1,4 @@
-import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form"
 import { z } from "zod";
@@ -7,13 +7,21 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 const schema = z.object({
-    email: z.string(),
-    password: z.string(),
+    email: z.string().email("This is not a valid email"),
+    password: z.string().min(8, "Password must at least be 8 characters"),
     confirmPassword: z.string(),
     firstName: z.string(),
     lastName: z.string(),
     title: z.string(),
-}); 
+}).superRefine(({ password, confirmPassword }, ctx) => {
+    if (confirmPassword !== password) {
+        ctx.addIssue({
+            code: "custom",
+            message: "Passwords don't match",
+            path: ["confirmPassword"]
+        })
+    }
+})
 
 function Register() {
     const form = useForm<z.infer<typeof schema>>({
@@ -56,6 +64,7 @@ function Register() {
                                     <FormControl>
                                         <Input placeholder="Title" {...field} />
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -68,6 +77,7 @@ function Register() {
                                     <FormControl>
                                         <Input placeholder="First Name" {...field} />
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -80,6 +90,7 @@ function Register() {
                                     <FormControl>
                                         <Input placeholder="Last Name" {...field} />
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -92,6 +103,7 @@ function Register() {
                                     <FormControl>
                                         <Input placeholder="Email" {...field} />
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -104,6 +116,7 @@ function Register() {
                                     <FormControl>
                                         <Input type="password" placeholder="Password" {...field} />
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -116,6 +129,7 @@ function Register() {
                                     <FormControl>
                                         <Input type="password" placeholder="Confirm Password" {...field} />
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />

@@ -2,7 +2,7 @@
 
 namespace UserManagementSystem.Server.Model.RequestBody
 {
-    public class LoginBody
+    public class Login
     {
         [Required]
         public string? Email { get; set; }

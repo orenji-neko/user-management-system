@@ -20,7 +20,7 @@ namespace UserManagementSystem.Server.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginBody model)
+        public async Task<IActionResult> Login([FromBody] Login model)
         {
             if (!ModelState.IsValid)
             {
@@ -47,7 +47,7 @@ namespace UserManagementSystem.Server.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<ActionResult<User>> Register([FromBody] RegisterBody model)
+        public async Task<ActionResult<User>> Register([FromBody] Register model)
         {
             if (!ModelState.IsValid)
             {

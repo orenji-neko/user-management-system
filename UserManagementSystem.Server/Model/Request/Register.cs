@@ -2,7 +2,7 @@
 
 namespace UserManagementSystem.Server.Model.RequestBody
 {
-    public class RegisterBody
+    public class Register
     {
         [Required] public string? Email { get; set; }
         [Required] public string? Password { get; set; }

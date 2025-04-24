@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace UserManagementSystem.Server.Model.RequestBody
 {
-    public class UserBody
+    public class CreateUser
     {
         [Required]
         public string? Email { get; set; }

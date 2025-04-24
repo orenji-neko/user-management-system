@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using UserManagementSystem.Server.Data;
 using UserManagementSystem.Server.Model;
+using UserManagementSystem.Server.Model.Request;
 using UserManagementSystem.Server.Model.RequestBody;
 
 namespace UserManagementSystem.Server.Controllers;
@@ -46,12 +47,15 @@ public class AccountController : Controller
      */
     [HttpPost]
     [Authorize(Policy = "AdminOnly")]
-    public async Task<IActionResult> CreateAccount([FromBody] UserBody UserBody)
+    public async Task<IActionResult> CreateAccount([FromBody] CreateUser UserBody)
     {
         if(!ModelState.IsValid)
         {
+            Console.WriteLine("Invalid request!");
             return BadRequest();
         }
+
+        var hasher = new PasswordHasher<User>();
 
         var newUser = new User
         {
@@ -64,13 +68,15 @@ public class AccountController : Controller
             Title = UserBody.Title,
             EmailConfirmed = false,
         };
+        newUser.PasswordHash = hasher.HashPassword(newUser, UserBody.Password);
 
-        var result = await _userManager.CreateAsync(newUser, UserBody.Password!);
+        var result = await _userManager.CreateAsync(newUser);
 
         // If creating user doesn't succeed.
         if (!result.Succeeded)
         {
-            return BadRequest(new { errors = result.Errors.Select(e => e.Description) });
+            Console.WriteLine("Creation failed!");
+            return BadRequest();
         }
 
         return Ok();
@@ -82,24 +88,26 @@ public class AccountController : Controller
      */
     [HttpPut("{id}")]
     [Authorize(Policy = "AdminOnly")]
-    public async Task<IActionResult> UpdateAccount(string id, [FromBody] UserBody UserBody)
+    public async Task<IActionResult> UpdateAccount(string id, [FromBody] UpdateUser UserBody)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest();
-        }
-
         var user = await _userManager.FindByIdAsync(id);
         if (user == null)
         {
+            Console.WriteLine("Missing user!");
             return BadRequest();
         }
+
+        user.FirstName = UserBody.FirstName;
+        user.LastName = UserBody.LastName;
+        user.Title = UserBody.Title;
+        user.Email = UserBody.Email;
 
         var result = await _userManager.UpdateAsync(user);
 
         // If creating user doesn't succeed.
         if (!result.Succeeded)
         {
+            Console.WriteLine("Failed to update user!");
             return BadRequest(new { errors = result.Errors.Select(e => e.Description) });
         }
 

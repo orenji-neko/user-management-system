@@ -1,4 +1,4 @@
-import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form"
 import { z } from "zod";
@@ -8,8 +8,8 @@ import { toast } from "sonner";
 import { Link } from "react-router";
 
 const schema = z.object({
-    email: z.string(),
-    password: z.string()
+    email: z.string().email("This is not a valid email"),
+    password: z.string().min(8, "Password must be at least 8 characters")
 });
 
 function Login() {
@@ -42,7 +42,7 @@ function Login() {
 
     return (
         <main className="w-screen h-screen bg-blue-500 flex flex-row justify-center items-center">
-            <div className="bg-white w-full mx-2 sm:mx-0 sm:w-[380px] h-[360px] p-4 rounded-md shadow-md">
+            <div className="bg-white w-full mx-2 sm:mx-0 sm:w-[380px] h-fit p-4 rounded-md shadow-md">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onLogin)} className="flex flex-col h-full justify-center gap-y-4">
                         <h1 className="text-3xl font-bold text-center">Login</h1>
@@ -55,6 +55,7 @@ function Login() {
                                     <FormControl>
                                         <Input placeholder="Email" {...field} />
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -67,6 +68,7 @@ function Login() {
                                     <FormControl>
                                         <Input type="password" placeholder="Password" {...field} />
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />

@@ -8,9 +8,11 @@ import './index.css'
 import AdminLayout from '@/layouts/AdminLayout';
 
 import Login from "@/pages/Login";
-import Accounts from "@/pages/admin/Accounts";
 import Register from './pages/Register';
 import NotFound from './pages/NotFound';
+
+import AdminHome from './pages/admin/Home';
+import AdminAccounts from "@/pages/admin/Accounts";
 
 const router = createBrowserRouter([
     {
@@ -31,7 +33,11 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                Component: Accounts,
+                Component: AdminHome,
+            },
+            {
+                path: "accounts",
+                Component: AdminAccounts
             }
         ]
     },
