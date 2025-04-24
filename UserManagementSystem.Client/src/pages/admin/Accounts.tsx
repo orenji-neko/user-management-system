@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { toast } from "sonner";
 
 interface Account {
     id: string;
@@ -17,6 +18,8 @@ export default function Accounts() {
 
         if (!response.ok) {
             setAccounts(null);
+            toast.error("Failed to fetch accounts!");
+            return;
         }
 
         const result = (await response.json()) as Account[];
@@ -49,7 +52,7 @@ export default function Accounts() {
                         <TableBody>
                             {
                                 accounts?.map((account) => (
-                                    <TableRow>
+                                    <TableRow key={account.id}>
                                         <TableCell>{account.id}</TableCell>
                                         <TableCell>{account.email}</TableCell>
                                         <TableCell>{account.title}</TableCell>

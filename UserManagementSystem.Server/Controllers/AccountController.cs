@@ -33,7 +33,7 @@ public class AccountController : Controller
      * Gets user accounts in a list form.
      */
     [HttpGet]
-    
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult<IEnumerable<User>>> GetAccounts()
     {
         var users = await _context.Users.ToArrayAsync();
@@ -45,6 +45,7 @@ public class AccountController : Controller
      * Create account.
      */
     [HttpPost]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> CreateAccount([FromBody] UserBody UserBody)
     {
         if(!ModelState.IsValid)
@@ -80,6 +81,7 @@ public class AccountController : Controller
      * Create account.
      */
     [HttpPut("{id}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> UpdateAccount(string id, [FromBody] UserBody UserBody)
     {
         if (!ModelState.IsValid)
@@ -109,6 +111,7 @@ public class AccountController : Controller
      * Create account.
      */
     [HttpDelete("{id}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> DeleteAccount(string id)
     {
         var user = await _context.Users.FindAsync(id);
