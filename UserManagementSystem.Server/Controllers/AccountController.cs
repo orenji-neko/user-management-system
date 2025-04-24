@@ -68,7 +68,7 @@ public class AccountController : Controller
             Title = UserBody.Title,
             EmailConfirmed = false,
         };
-        newUser.PasswordHash = hasher.HashPassword(newUser, UserBody.Password);
+        newUser.PasswordHash = hasher.HashPassword(newUser, UserBody.Password!);
 
         var result = await _userManager.CreateAsync(newUser);
 
@@ -76,6 +76,13 @@ public class AccountController : Controller
         if (!result.Succeeded)
         {
             Console.WriteLine("Creation failed!");
+            return BadRequest();
+        }
+
+        var roleResult = await _userManager.AddToRoleAsync(newUser, UserBody.Role!);
+        if (!roleResult.Succeeded)
+        {
+            Console.WriteLine("Role assignment failed!");
             return BadRequest();
         }
 

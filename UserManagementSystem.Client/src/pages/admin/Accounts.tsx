@@ -8,6 +8,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
 import { Input } from "../../components/ui/input";
 
 interface Account {
@@ -63,18 +65,14 @@ export default function Accounts() {
             confirmPassword: z.string(),
             title: z.string(),
             firstName: z.string(),
-            lastName: z.string()
+            lastName: z.string(),
+            role: z.enum(["Admin", "User"])
         })
 
         const createForm = useForm<z.infer<typeof createSchema>>({
             resolver: zodResolver(createSchema),
             defaultValues: {
-                email: "",
-                password: "",
-                confirmPassword: "",
-                title: "",
-                firstName: "",
-                lastName: "",
+                role: "User",
             }
         });
         const createAccount = async (values: z.infer<typeof createSchema>) => {
@@ -186,6 +184,27 @@ export default function Accounts() {
                                     </FormItem>
                                 )}
                             />
+                            <FormField
+                                control={createForm.control}
+                                name="role"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Role</FormLabel>
+                                        <FormControl>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Role" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Admin">Admin</SelectItem>
+                                                    <SelectItem value="User">User</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                             <Button type="submit">Create User</Button>
                         </form>
                     </Form>
@@ -208,7 +227,7 @@ export default function Accounts() {
                 email: account.email,
                 title: account.title,
                 firstName: account.firstName,
-                lastName: account.lastName,
+                lastName: account.lastName
             }
         });
         const editAccount = async (values: z.infer<typeof editSchema>) => {

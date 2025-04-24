@@ -73,9 +73,23 @@ namespace UserManagementSystem.Server.Controllers
                 Console.WriteLine("Missing password");
                 return BadRequest(ModelState);
             }
+
             user.PasswordHash = passwordhasher.HashPassword(user, model.Password);
 
-            await _userManager.CreateAsync(user);
+            var createResult = await _userManager.CreateAsync(user);
+            var addRoleResult = await _userManager.AddToRoleAsync(user, "User");
+
+            if (!createResult.Succeeded)
+            {
+                Console.WriteLine("Failed to create user");
+                return BadRequest();
+            }
+
+            if (!addRoleResult.Succeeded)
+            {
+                Console.WriteLine("Failed to add role");
+                return BadRequest();
+            }
 
             return user;
         }
