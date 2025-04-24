@@ -2,6 +2,6 @@
 
 ## Team Structure
 - Group Leader: Mark Jess Anthony Enfermo
-- Backend Dev: Ian John Dal
-- Frontend Dev: Princess Villanueva
+- Backend Dev: Mark Jess Anthony Enfermo
+- Frontend Dev: Princess Villanueva / Ian John Dal
 - Tester: Christian Yancha
