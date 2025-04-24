@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UserManagementSystem.Server.Data;
 using UserManagementSystem.Server.Model;
@@ -5,18 +7,36 @@ using UserManagementSystem.Server.Model;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlite("Data Source=dev.db");
 });
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Events = new CookieAuthenticationEvents
+        {
+            OnRedirectToLogin = (context) =>
+            {
+                // Unauthorized
+                context.Response.StatusCode = 401;
+                return Task.CompletedTask;
+            },
+            OnRedirectToAccessDenied = (context) =>
+            {
+                // Unauthorized
+                context.Response.StatusCode = 401;
+                return Task.CompletedTask;
+            }
+        };
+    });
 builder.Services.AddIdentity<User, Role>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));

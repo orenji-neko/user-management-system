@@ -1,8 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router";
+import { Toaster } from "@/components/ui/sonner";
 
 import './index.css'
+
+import AdminLayout from '@/layouts/AdminLayout';
 
 import Login from "@/pages/Login";
 import Accounts from "@/pages/admin/Accounts";
@@ -10,20 +13,23 @@ import Accounts from "@/pages/admin/Accounts";
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <p>Nothing to see here</p>
+        Component: Login
     },
     {
-        path: "/login",
-        element: <Login />
-    },
-    {
-        path: "/admin/accounts",
-        element: <Accounts/>
+        path: "/admin",
+        Component: AdminLayout,
+        children: [
+            {
+                index: true,
+                Component: Accounts,
+            }
+        ]
     }
 ]);
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <RouterProvider router={router} />
+        <Toaster closeButton position="top-center" />
     </StrictMode>,
 )
