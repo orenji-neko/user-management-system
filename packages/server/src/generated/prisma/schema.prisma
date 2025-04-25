@@ -16,4 +16,5 @@ model User {
   firstName    String
   title        String
   admin        Boolean @default(false)
+  verified     Boolean @default(false)
 }

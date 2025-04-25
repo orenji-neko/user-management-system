@@ -9,9 +9,10 @@ import { prisma } from "../global";
 import registerSchema from "../schemas/registerSchema";
 import bcrypt from "bcrypt";
 import { BadRequest, Unauthorized } from "../middleware/error";
+import authorize from "../middleware/authorize";
 
-function generateToken(user: User) {
-  const payload: User = user;
+function generateToken(data: any) {
+  const payload: any = data;
 
   const token = jwt.sign(
     payload,
@@ -41,7 +42,7 @@ export default Router()
         return;
       }
 
-      const isEqual = await bcrypt.compare(password, user.passwordHash)
+      const isEqual = await bcrypt.compare(password, user.passwordHash);
       if (!isEqual) {
         next(new Unauthorized("Invalid password"));
         return;
@@ -77,4 +78,53 @@ export default Router()
         next(new BadRequest("Failed to register user"));
       }
     }
+  )
+  // sends verification url to email
+  .get(
+    "/verify-email",
+    async (req: Request, res: Response, next: NextFunction) => {
+
+    }
+  )
+  // process verification url
+  .post(
+    "/verify-email",
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { token } = req.query as { token: string };
+      const data = (await jwt.verify(
+        token,
+        env.JWT_SECRET || "fischl-von-luftschloss-narfidort"
+      )) as {
+        id: string;
+      };
+
+      try {
+        const user = await prisma.user.findUnique({
+          where: {
+            id: parseInt(data.id),
+          },
+        });
+        if (!user) {
+          throw new Error();
+        }
+
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            verified: true,
+          },
+        });
+
+        res.status(200);
+      } catch (err) {
+        next(new BadRequest("Invalid verification token"));
+      }
+    }
+  )
+  .get(
+    "/refresh-token",
+    authorize({ admin: false }),
+    async (req: Request, res: Response, next: NextFunction) => {}
   );
