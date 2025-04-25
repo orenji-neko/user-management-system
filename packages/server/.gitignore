@@ -1,3 +1,8 @@
+# node
 node_modules
+
+# dotenv
+src/generated/
+
 # Keep environment variables out of version control
 .env

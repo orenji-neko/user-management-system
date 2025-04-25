@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "ts-node ./src/index.ts",
     "prisma:push": "prisma db push",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",
