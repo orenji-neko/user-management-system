@@ -87,7 +87,7 @@ export default Router()
     }
   )
   // process verification url
-  .post(
+  .get(
     "/verify-email",
     async (req: Request, res: Response, next: NextFunction) => {
       const { token } = req.query as { token: string };
