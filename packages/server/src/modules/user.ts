@@ -26,13 +26,18 @@ export default Router()
     ) => {
       try {
         const { email, password, lastName, firstName, role, title } = req.body;
+        
+        if(!password) {
+          throw new BadRequest("Missing password");
+        }
+
         const user = await prisma.user.create({
           data: {
             email: email,
             lastName: lastName,
             firstName: firstName,
             title: title,
-            passwordHash: await bcrypt.hash(req.body.password, 10),
+            passwordHash: await bcrypt.hash(password, 10),
             admin: req.body.role.toLowerCase() === "admin",
           },
           select: {
@@ -65,6 +70,9 @@ export default Router()
 
       try {
         const { email, password, lastName, firstName, title } = req.body;
+
+        const tmp = await prisma.user.findUnique({ where: { id: parseInt(id) } });
+
         const user = await prisma.user.update({
           where: {
             id: parseInt(id),
@@ -74,7 +82,7 @@ export default Router()
             lastName: lastName,
             firstName: firstName,
             title: title,
-            passwordHash: await bcrypt.hash(req.body.password, 10),
+            passwordHash: password ? await bcrypt.hash(password, 10) : tmp?.passwordHash,
             admin: req.body.role.toLowerCase() === "admin",
           },
           select: {
