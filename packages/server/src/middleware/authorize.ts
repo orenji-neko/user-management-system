@@ -4,7 +4,7 @@ import { env } from "process";
 import { prisma } from "../global";
 import { Unauthorized } from "./error";
 
-export default function authorize({ admin }: { admin: boolean }) {
+export default function authorize({ admin }: { admin?: boolean }) {
   return [
     // authentication
     expressjwt({
