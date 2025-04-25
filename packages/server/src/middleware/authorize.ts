@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { expressjwt, Request as JWTRequest } from "express-jwt";
 import { env } from "process";
 import { prisma } from "../global";
+import { Unauthorized } from "./error";
 
 export default function authorize({ admin }: { admin: boolean }) {
   return [
@@ -15,8 +16,9 @@ export default function authorize({ admin }: { admin: boolean }) {
       const id = req.auth?.id as number;
       const user = await prisma.user.findUnique({ where: { id: id } });
 
-      if (!(admin && user?.admin)) {
-        return res.status(401);
+      if (admin && !user?.admin) {
+        next(new Unauthorized("Admin only"));
+        return;
       }
 
       next();

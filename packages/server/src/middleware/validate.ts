@@ -1,5 +1,6 @@
 import { ZodError, ZodSchema } from "zod";
 import type { NextFunction, Request, Response } from "express";
+import { BadRequest } from "./error";
 
 export interface TypedRequest<Body> extends Request {
   body: Body;
@@ -13,9 +14,7 @@ export default function validate(schema: ZodSchema<any>) {
     } catch (err: any) {
       const _err: ZodError = err;
 
-      res.status(400).json({
-        errors: _err.errors
-      });
+      next(new BadRequest("Validation error", _err.errors));
     }
   };
 }
