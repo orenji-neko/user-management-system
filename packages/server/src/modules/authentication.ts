@@ -10,6 +10,7 @@ import { prisma } from "../global";
 import bcrypt from "bcrypt";
 import { BadRequest, Unauthorized } from "../middleware/error";
 import authorize from "../middleware/authorize";
+import sendEmail from "../utils/email";
 
 /**
  * Generate a JWT token.
@@ -114,9 +115,17 @@ export default Router()
           env.JWT_SECRET || "fischl-von-luftschloss-narfidort",
           { algorithm: "HS256", expiresIn: "1h" }
         );
+        await sendEmail({
+          to: email,
+          subject: "Sign-up verification API - Verify Email",
+          html: `
+            <h4>Verify Email</h4> 
+            <p>Thanks for registering!</p> 
+            <a>http://localhost:5173/api/verify-email?token=${verificationToken}</a>`,
+        });
+
         res.status(200).json({
           message: "Verification email sent",
-          verificationToken,
         });
       } catch (err) {
         next(new BadRequest("Failed to send verification email"));
