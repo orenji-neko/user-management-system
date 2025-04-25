@@ -1,4 +1,5 @@
 import Express from "express";
+import authentication from "./modules/authentication";
 
 const app = Express();
 
@@ -6,8 +7,7 @@ const app = Express();
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
 
-app.get("/api", (request, response) => {
-  response.send("Testing");
-});
+// modules
+app.use("/api/auth", authentication);
 
 app.listen(3000);

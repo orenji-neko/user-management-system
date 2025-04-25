@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction, json, urlencoded } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "process";
 import type { User } from "../generated/prisma";
@@ -25,10 +25,22 @@ export default Router()
   .post(
     "/login",
     validate(loginSchema),
-    async (req: TypedRequest<z.infer<typeof loginSchema>>, res: Response) => {
+    async (req: TypedRequest<z.infer<typeof loginSchema>>, res: Response, next: NextFunction) => {
       const { email, password } = req.body;
 
       const user = await prisma.user.findUnique({ where: { email: email } });
+      if (!user) {
+        next(new Error());
+        return;
+      }
+
+      if (user.passwordHash !== password) {
+        next(new Error());
+        return;
+      }
+
+      const token = generateToken(user);
+      res.status(200).json(token);
     }
   )
   .post("/register", (req: Request, res: Response) => {});
