@@ -9,7 +9,10 @@ import { BadRequest } from "../middleware/error";
 
 export default Router()
   .get("/", authorize({ admin: true }), async (req: Request, res: Response) => {
-    const users = await prisma.user.findMany();
+    const users = (await prisma.user.findMany()).map((user) => ({
+      ...user,
+      role: user.admin ? "admin" : "user"
+    }));
     res.status(200).json(users);
   })
   .post(
@@ -22,9 +25,13 @@ export default Router()
       next: NextFunction
     ) => {
       try {
+        const { email, password, lastName, firstName, role, title } = req.body;
         const user = await prisma.user.create({
           data: {
-            ...req.body,
+            email: email,
+            lastName: lastName,
+            firstName: firstName,
+            title: title,
             passwordHash: await bcrypt.hash(req.body.password, 10),
             admin: req.body.role.toLowerCase() === "admin",
           },
@@ -57,12 +64,16 @@ export default Router()
       const id = req.params.id;
 
       try {
+        const { email, password, lastName, firstName, title } = req.body;
         const user = await prisma.user.update({
           where: {
             id: parseInt(id),
           },
           data: {
-            ...req.body,
+            email: email,
+            lastName: lastName,
+            firstName: firstName,
+            title: title,
             passwordHash: await bcrypt.hash(req.body.password, 10),
             admin: req.body.role.toLowerCase() === "admin",
           },

@@ -33,7 +33,7 @@ function Register() {
     });
 
     const onRegister = async (values: z.infer<typeof schema>) => {
-        const response = await fetch("/auth/register", {
+        const response = await fetch("/api/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

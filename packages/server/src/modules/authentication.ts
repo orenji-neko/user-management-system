@@ -22,7 +22,7 @@ function generateToken(data: any) {
     env.JWT_SECRET || "fischl-von-luftschloss-narfidort",
     {
       algorithm: "HS256",
-      expiresIn: "1m",
+      expiresIn: "10m",
     }
   );
 }
@@ -59,7 +59,13 @@ export default Router()
       }
 
       const token = generateToken(user);
-      res.status(200).json({ token });
+      res.status(200).json({
+        token,
+        user: {
+          ...user,
+          role: user.admin ? "admin" : "user",
+        },
+      });
     }
   )
   // REGISTER endpoint
@@ -143,6 +149,35 @@ export default Router()
         res.status(200).json({ message: "Email verified successfully" });
       } catch (err) {
         next(new BadRequest("Invalid verification token"));
+      }
+    }
+  )
+  .get(
+    "/verify-authentication",
+    authorize({ admin: false }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const jwtRequest = req as any;
+        const userId = jwtRequest.auth?.id;
+
+        if (!userId) {
+          return next(new Unauthorized("Invalid token, no user data found"));
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { id: Number(userId) },
+        });
+
+        if (!user) {
+          return next(new Unauthorized("User not found"));
+        }
+
+        res.status(200).json({
+          ...user,
+          role: user.admin ? "admin" : "user",
+        });
+      } catch (err) {
+        next(err);
       }
     }
   )
