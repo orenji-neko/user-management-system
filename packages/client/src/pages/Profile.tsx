@@ -16,6 +16,9 @@ export default function Profile() {
     <>
       <p>Profile</p>
       <p>{user?.email}</p>
+      <p>{user?.lastName}</p>
+      <p>{user?.firstName}</p>
+      <p>{user?.title}</p>
     </>
   );
 }

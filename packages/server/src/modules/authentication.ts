@@ -119,9 +119,11 @@ export default Router()
           to: email,
           subject: "Sign-up verification API - Verify Email",
           html: `
-            <h4>Verify Email</h4> 
-            <p>Thanks for registering!</p> 
-            <a>http://localhost:5173/api/verify-email?token=${verificationToken}</a>`,
+            <h4>Verify Email</h4>
+            <p>Thanks for registering!</p>
+            <a href="http://localhost:5173/api/verify-email?token=${verificationToken}">
+              Verify your email
+            </a>`,
         });
 
         res.status(200).json({
@@ -161,6 +163,7 @@ export default Router()
       }
     }
   )
+  // Endpoint to verify authentication.
   .get(
     "/verify-authentication",
     authorize({ admin: false }),
@@ -168,7 +171,6 @@ export default Router()
       try {
         const jwtRequest = req as any;
         const userId = jwtRequest.auth?.id;
-
         if (!userId) {
           return next(new Unauthorized("Invalid token, no user data found"));
         }
@@ -176,7 +178,6 @@ export default Router()
         const user = await prisma.user.findUnique({
           where: { id: Number(userId) },
         });
-
         if (!user) {
           return next(new Unauthorized("User not found"));
         }
@@ -211,6 +212,77 @@ export default Router()
         res.status(200).json({ token: newToken });
       } catch (err) {
         next(err);
+      }
+    }
+  )
+  // Forgot Password endpoint
+  .post(
+    "/forgot-password",
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { email } = req.body;
+      if (!email) {
+        return next(new BadRequest("Email is required"));
+      }
+      try {
+        const user = await prisma.user.findUnique({ where: { email } });
+        // Always respond with success, even if user is not found, to prevent email enumeration
+        if (!user) {
+          res.status(200).json({
+            message: "If that email address exists, a password reset link has been sent.",
+          });
+          return;
+        }
+        // Generate a short-lived reset token (valid for 15 minutes)
+        const resetToken = jwt.sign(
+          { id: user.id },
+          env.JWT_SECRET || "fischl-von-luftschloss-narfidort",
+          { algorithm: "HS256", expiresIn: "15m" }
+        );
+        await sendEmail({
+          to: email,
+          subject: "Reset your password",
+          html: `
+            <h4>Reset your Password</h4>
+            <p>Click the link below to reset your password. This link is valid for 15 minutes.</p>
+            <a href="http://localhost:5173/reset-password?token=${resetToken}">
+              Reset Password
+            </a>`,
+        });
+        res.status(200).json({
+          message: "If that email address exists, a password reset link has been sent.",
+        });
+      } catch (err) {
+        next(err);
+      }
+    }
+  )
+  // Change Password endpoint
+  .post(
+    "/change-password",
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { token, password } = req.body;
+      if (!token || !password) {
+        return next(new BadRequest("Token and password are required"));
+      }
+      try {
+        const data = jwt.verify(
+          token,
+          env.JWT_SECRET || "fischl-von-luftschloss-narfidort"
+        ) as { id: string };
+        const user = await prisma.user.findUnique({
+          where: { id: parseInt(data.id) },
+        });
+        if (!user) {
+          return next(new Unauthorized("User not found"));
+        }
+        const newPasswordHash = await bcrypt.hash(password, 10);
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { passwordHash: newPasswordHash },
+        });
+        res.status(200).json({ message: "Password changed successfully" });
+      } catch (err) {
+        next(new BadRequest("Invalid or expired token"));
       }
     }
   );

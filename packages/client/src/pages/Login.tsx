@@ -83,10 +83,14 @@ function Login() {
             />
 
             <Button type="submit">Login</Button>
-            <p className="text-center">or</p>
             <Link to="/register" className="w-full">
               <Button type="button" variant="secondary" className="w-full">
                 Register
+              </Button>
+            </Link>
+            <Link to="/forgot-password" className="w-full">
+              <Button type="button" variant="ghost" className="w-full">
+                Forgot Password?
               </Button>
             </Link>
           </form>
