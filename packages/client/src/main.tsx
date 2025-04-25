@@ -18,6 +18,7 @@ import AuthProvider from "@/components/auth/AuthProvider";
 import UserLayout from "@/layouts/UserLayout";
 import UserHome from "@/pages/user/Home";
 import RequireAuth from "./components/auth/RequireAuth";
+import Profile from "./pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,14 @@ const router = createBrowserRouter([
   {
     path: "/register",
     Component: Register,
+  },
+  {
+    path: "/profile",
+    element: (
+      <RequireAuth>
+        <Profile />
+      </RequireAuth>
+    ),
   },
   {
     path: "/admin",

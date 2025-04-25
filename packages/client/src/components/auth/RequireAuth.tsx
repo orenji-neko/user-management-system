@@ -7,7 +7,7 @@ export default function RequireAuth({
   role,
 }: {
   children: React.ReactNode;
-  role: "user" | "admin";
+  role?: "user" | "admin";
 }) {
   const navigate = useNavigate();
   const { verifyAuth } = useAuth();
@@ -15,7 +15,7 @@ export default function RequireAuth({
   useEffect(() => {
     const verify = async () => {
       const user = await verifyAuth();
-      if (user?.role !== role) {
+      if (role && user?.role !== role) {
         navigate("/");
       }
     };
