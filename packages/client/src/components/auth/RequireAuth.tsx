@@ -14,8 +14,13 @@ export default function RequireAuth({
 
   useEffect(() => {
     const verify = async () => {
-      const user = await verifyAuth();
-      if (role && user?.role !== role) {
+      try {
+        const user = await verifyAuth();
+        if (role && user?.role !== role) {
+          navigate("/");
+        }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
         navigate("/");
       }
     };

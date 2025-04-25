@@ -9,7 +9,6 @@ export type UserAuth = {
 };
 
 const AuthContext = createContext<{
-  user: UserAuth | null;
   login: (email: string, password: string) => Promise<UserAuth>;
   logout: () => void;
   token: () => string | null;

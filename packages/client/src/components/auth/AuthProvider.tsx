@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import AuthContext, { UserAuth } from "@/context/AuthContext";
 
 interface AuthProviderProps {
@@ -6,8 +6,6 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<UserAuth | null>(null);
-
   const login = async (email: string, password: string) => {
     try {
       const response = await fetch("/api/login", {
@@ -24,9 +22,9 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       }
 
       const data = await response.json();
+      console.log(data);
 
       const { token, user } = data as { token: string; user: UserAuth };
-      setUser(user);
       localStorage.setItem("token", token);
 
       return user;
@@ -37,7 +35,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const logout = () => {
-    setUser(null);
     localStorage.removeItem("token");
   };
 
@@ -73,9 +70,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
           }
           return res.json();
         })
-        .then((data) => {
-          setUser(data.user);
-        })
         .catch((err) => {
           console.error("Auto-login failed:", err);
           logout();
@@ -86,7 +80,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const token = () => localStorage.getItem("token");
 
   const value = {
-    user,
     login,
     logout,
     token,
