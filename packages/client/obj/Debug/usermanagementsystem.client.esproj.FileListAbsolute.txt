@@ -1,0 +1,1 @@
+C:\Users\Acer\source\repos\user-management-system\usermanagementsystem.client\obj\Debug\UserManagementSystem.Client.esproj.CoreCompileInputs.cache
