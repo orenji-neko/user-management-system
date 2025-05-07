@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# node
 node_modules/
-=======
-node_modules
->>>>>>> b1dc4164eb2a03c4f4e14e237ff5129b2825e249
+dist/
+.env
